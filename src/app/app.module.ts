@@ -25,17 +25,13 @@ import { RouterModule } from '@angular/router';
     UserModule,
     MessageModule,
     RouterModule.forRoot([
-      {path:'welcome', component:WelcomeComponent},
-      {path:'', redirectTo:'welcome', pathMatch: 'full'},
-      {path:'**', component:PageNotFoundComponent }
-
-    ])
+      { path: 'welcome', component: WelcomeComponent },
+      { path: 'home', redirectTo: 'welcome' },
+      { path: '', redirectTo: 'welcome', pathMatch: 'full' },
+      { path: '**', component: PageNotFoundComponent },
+    ]),
   ],
-  declarations: [
-    AppComponent,
-    WelcomeComponent,
-    PageNotFoundComponent
-  ],
-  bootstrap: [AppComponent]
+  declarations: [AppComponent, WelcomeComponent, PageNotFoundComponent],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
