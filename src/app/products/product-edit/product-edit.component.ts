@@ -24,15 +24,10 @@ export class ProductEditComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    +this.route.paramMap.subscribe(
-      (params) => this.getProduct(+params.get('id'))
-    );
-  }
-
-  getProduct(id: number): void {
-    this.productService.getProduct(id).subscribe({
-      next: (product) => this.onProductRetrieved(product),
-      error: (err) => (this.errorMessage = err),
+    // observable instead of snapshot allows checking for changes
+    this.route.data.subscribe((resolvedData) => {
+      this.onProductRetrieved(resolvedData.product.product);
+      this.errorMessage = resolvedData.product.error;
     });
   }
 
