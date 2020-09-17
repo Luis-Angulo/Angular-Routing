@@ -9,10 +9,12 @@ import { RouterModule } from '@angular/router';
 import { ProductResolver } from './product-resolver';
 import { ProductEditInfoComponent } from './product-edit/product-edit-info.component';
 import { ProductEditTagsComponent } from './product-edit/product-edit-tags.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
     SharedModule,
+    FormsModule,
     RouterModule.forChild([
       { path: 'products', component: ProductListComponent },
       {
@@ -37,6 +39,8 @@ import { ProductEditTagsComponent } from './product-edit/product-edit-tags.compo
     ProductListComponent,
     ProductDetailComponent,
     ProductEditComponent,
+    ProductEditInfoComponent,
+    ProductEditTagsComponent
   ],
 })
 export class ProductModule {}
