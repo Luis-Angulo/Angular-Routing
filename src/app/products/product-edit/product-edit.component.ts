@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { MessageService } from '../../messages/message.service';
 
@@ -7,21 +8,26 @@ import { ProductService } from '../product.service';
 
 @Component({
   templateUrl: './product-edit.component.html',
-  styleUrls: ['./product-edit.component.css']
+  styleUrls: ['./product-edit.component.css'],
 })
-export class ProductEditComponent {
+export class ProductEditComponent implements OnInit {
   pageTitle = 'Product Edit';
   errorMessage: string;
 
   product: Product;
 
-  constructor(private productService: ProductService,
-              private messageService: MessageService) { }
+  constructor(
+    private productService: ProductService,
+    private messageService: MessageService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
-  getProduct(id: number): void {
-    this.productService.getProduct(id).subscribe({
-      next: product => this.onProductRetrieved(product),
-      error: err => this.errorMessage = err
+  ngOnInit(): void {
+    // observable instead of snapshot allows checking for changes
+    this.route.data.subscribe((resolvedData) => {
+      this.onProductRetrieved(resolvedData.product.product);
+      this.errorMessage = resolvedData.product.error;
     });
   }
 
@@ -46,8 +52,9 @@ export class ProductEditComponent {
     } else {
       if (confirm(`Really delete the product: ${this.product.productName}?`)) {
         this.productService.deleteProduct(this.product.id).subscribe({
-          next: () => this.onSaveComplete(`${this.product.productName} was deleted`),
-          error: err => this.errorMessage = err
+          next: () =>
+            this.onSaveComplete(`${this.product.productName} was deleted`),
+          error: (err) => (this.errorMessage = err),
         });
       }
     }
@@ -57,13 +64,19 @@ export class ProductEditComponent {
     if (true === true) {
       if (this.product.id === 0) {
         this.productService.createProduct(this.product).subscribe({
-          next: () => this.onSaveComplete(`The new ${this.product.productName} was saved`),
-          error: err => this.errorMessage = err
+          next: () =>
+            this.onSaveComplete(
+              `The new ${this.product.productName} was saved`
+            ),
+          error: (err) => (this.errorMessage = err),
         });
       } else {
         this.productService.updateProduct(this.product).subscribe({
-          next: () => this.onSaveComplete(`The updated ${this.product.productName} was saved`),
-          error: err => this.errorMessage = err
+          next: () =>
+            this.onSaveComplete(
+              `The updated ${this.product.productName} was saved`
+            ),
+          error: (err) => (this.errorMessage = err),
         });
       }
     } else {
@@ -75,7 +88,6 @@ export class ProductEditComponent {
     if (message) {
       this.messageService.addMessage(message);
     }
-
-    // Navigate back to the product list
+    this.router.navigate(['/products']);
   }
 }
