@@ -39,6 +39,7 @@
     </li>
   </ul>
 </nav>
-<div class="container">
-  <router-outlet></router-outlet>
+<!-- slide animation directive requires @ and checks the state of the outlet -->
+<div class="container" [@slideInAnimation]="ro.isActivated ? ro.activatedRoute : ''">
+  <router-outlet #ro="outlet"></router-outlet>
 </div>
