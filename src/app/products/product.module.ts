@@ -16,21 +16,28 @@ import { FormsModule } from '@angular/forms';
     SharedModule,
     FormsModule,
     RouterModule.forChild([
-      { path: 'products', component: ProductListComponent },
       {
-        path: 'products/:id',
-        component: ProductDetailComponent,
-        resolve: { product: ProductResolver },
-      },
-      {
-        path: 'products/:id/edit',
-        component: ProductEditComponent,
-        resolve: { product: ProductResolver },
-        // child routes to load nested in the parent routerOutlet
+        path: 'products',
+        // child routes are relative to parent path
         children: [
-          { path: '', redirectTo: 'info', pathMatch: 'full' },
-          { path: 'info', component: ProductEditInfoComponent },
-          { path: 'tags', component: ProductEditTagsComponent },
+          // these will render on the first (outer) outlet
+          { path: '', component: ProductListComponent },
+          {
+            path: ':id',
+            component: ProductDetailComponent,
+            resolve: { product: ProductResolver },
+          },
+          {
+            path: ':id/edit',
+            component: ProductEditComponent,
+            resolve: { product: ProductResolver },
+            // these will render on the second (inner) outlet
+            children: [
+              { path: '', redirectTo: 'info', pathMatch: 'full' },
+              { path: 'info', component: ProductEditInfoComponent },
+              { path: 'tags', component: ProductEditTagsComponent },
+            ],
+          },
         ],
       },
     ]),
@@ -40,7 +47,7 @@ import { FormsModule } from '@angular/forms';
     ProductDetailComponent,
     ProductEditComponent,
     ProductEditInfoComponent,
-    ProductEditTagsComponent
+    ProductEditTagsComponent,
   ],
 })
 export class ProductModule {}
