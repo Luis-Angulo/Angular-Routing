@@ -17,6 +17,7 @@
           style="width: 80px"
           type="button"
           (click)="saveProduct()"
+          [disabled]="!isValid()"
         >
           Save
         </button>
