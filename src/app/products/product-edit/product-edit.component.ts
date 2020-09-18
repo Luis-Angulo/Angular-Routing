@@ -11,9 +11,9 @@ import { ProductService } from '../product.service';
   styleUrls: ['./product-edit.component.css'],
 })
 export class ProductEditComponent implements OnInit {
+  dataIsValid: { [key: string]: boolean } = {};
   pageTitle = 'Product Edit';
   errorMessage: string;
-
   product: Product;
 
   constructor(
@@ -61,7 +61,7 @@ export class ProductEditComponent implements OnInit {
   }
 
   saveProduct(): void {
-    if (true === true) {
+    if (this.isValid()) {
       if (this.product.id === 0) {
         this.productService.createProduct(this.product).subscribe({
           next: () =>
@@ -89,5 +89,30 @@ export class ProductEditComponent implements OnInit {
       this.messageService.addMessage(message);
     }
     this.router.navigate(['/products']);
+  }
+
+  isValid(path?: string): boolean {
+    this.validate();
+    if (path) {
+      return this.dataIsValid[path];
+    }
+    return (
+      this.dataIsValid &&
+      Object.keys(this.dataIsValid).every(
+        (key) => this.dataIsValid[key] === true
+      )
+    );
+  }
+
+  validate(): void {
+    // We validate separate from the form validation because you can't
+    // use the form validation across children that don't share the template.
+
+    // reset the validation object to prevent stateful errors
+    this.dataIsValid = {};
+    const p = this.product;
+    this.dataIsValid.info =
+      p.productName && p.productCode && p.productName.length >= 3;
+    this.dataIsValid.tags = p.category && p.category.length >= 3;
   }
 }
