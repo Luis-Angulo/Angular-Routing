@@ -14,7 +14,25 @@ export class ProductEditComponent implements OnInit {
   dataIsValid: { [key: string]: boolean } = {};
   pageTitle = 'Product Edit';
   errorMessage: string;
-  product: Product;
+
+  private currentProduct: Product; // shared across components when editing
+  private originalProduct: Product; // used to store the form's original state
+
+  public get isDirty(): boolean {
+    return (
+      JSON.stringify(this.originalProduct) !==
+      JSON.stringify(this.currentProduct)
+    );
+  }
+
+  public get product(): Product {
+    return this.currentProduct;
+  }
+  public set product(v: Product) {
+    this.currentProduct = v;
+    // keep a copy so any alterations are kept until the setter is called
+    this.originalProduct = { ...v };
+  }
 
   constructor(
     private productService: ProductService,
@@ -88,6 +106,7 @@ export class ProductEditComponent implements OnInit {
     if (message) {
       this.messageService.addMessage(message);
     }
+    this.reset();
     this.router.navigate(['/products']);
   }
 
@@ -102,6 +121,14 @@ export class ProductEditComponent implements OnInit {
         (key) => this.dataIsValid[key] === true
       )
     );
+  }
+
+  // need to reset both current and original product after the save to prevent
+  // guard activation on save
+  reset(): void {
+    this.dataIsValid = null;
+    this.currentProduct = null;
+    this.originalProduct = null;
   }
 
   validate(): void {
