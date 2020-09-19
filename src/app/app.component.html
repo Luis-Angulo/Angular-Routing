@@ -28,10 +28,16 @@
   </ul>
   <ul class="navbar-nav ml-auto">
     <li class="nav-item" *ngIf="isLoggedIn">
+      <!-- first outlet syntax -->
       <a class="nav-link">Welcome {{ userName }}</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link">Show Messages</a>
+      <a *ngIf="!isMessageDisplayed" class="nav-link" (click)="displayMessages()"
+        >Show Messages</a
+      >
+      <a *ngIf="isMessageDisplayed" class="nav-link" (click)="hideMessages()"
+        >Hide Messages</a
+      >
     </li>
     <li class="nav-item" [routerLink]="['/login']" *ngIf="!isLoggedIn">
       <a class="nav-link">Log In</a>
@@ -42,6 +48,16 @@
   </ul>
 </nav>
 <!-- slide animation directive requires @ and checks the state of the outlet -->
-<div class="container" [@slideInAnimation]="ro.isActivated ? ro.activatedRoute : ''">
-  <router-outlet #ro="outlet"></router-outlet>
+<div class="container">
+  <div class="row">
+    <div
+      class="col-md-10"
+      [@slideInAnimation]="ro.isActivated ? ro.activatedRoute : ''"
+    >
+      <router-outlet #ro="outlet"></router-outlet>
+    </div>
+    <div class="col-md-2">
+      <router-outlet name="popup"></router-outlet>
+    </div>
+  </div>
 </div>

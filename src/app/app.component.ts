@@ -10,6 +10,7 @@ import {
   NavigationError,
 } from '@angular/router';
 import { slideInAnimation } from './app.animation';
+import { MessageService } from './messages/message.service';
 
 @Component({
   selector: 'pm-root',
@@ -18,7 +19,7 @@ import { slideInAnimation } from './app.animation';
   animations: [slideInAnimation],
 })
 export class AppComponent {
-  loading = true;  // controls animations by activating on some events using the router event method
+  loading = true; // controls animations by activating on some events using the router event method
   pageTitle = 'Acme Product Management';
 
   get isLoggedIn(): boolean {
@@ -32,7 +33,16 @@ export class AppComponent {
     return '';
   }
 
-  constructor(private authService: AuthService, private router: Router) {
+  get isMessageDisplayed(): boolean {
+    return this.messageService.isDisplayed;
+  }
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    // irl don't use services from the template
+    private messageService: MessageService
+  ) {
     // subscribe to changes in route activation
     router.events.subscribe((routerEvent: Event) =>
       this.checkRouterEvent(routerEvent)
@@ -50,6 +60,16 @@ export class AppComponent {
     ) {
       this.loading = false;
     }
+  }
+
+  displayMessages(): void {
+    this.router.navigate([{ outlets: { popup: ['messages'] } }]);
+    this.messageService.isDisplayed = true;
+  }
+
+  hideMessages(): void {
+    this.router.navigate([{ outlets: { popup: null } }]);
+    this.messageService.isDisplayed = false;
   }
 
   logOut(): void {
