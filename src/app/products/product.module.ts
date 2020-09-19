@@ -10,6 +10,7 @@ import { ProductResolver } from './product-resolver';
 import { ProductEditInfoComponent } from './product-edit/product-edit-info.component';
 import { ProductEditTagsComponent } from './product-edit/product-edit-tags.component';
 import { FormsModule } from '@angular/forms';
+import { ProductListResolver } from './product-list-resolver';
 
 @NgModule({
   imports: [
@@ -21,7 +22,7 @@ import { FormsModule } from '@angular/forms';
         // child routes are relative to parent path
         children: [
           // these will render on the first (outer) outlet
-          { path: '', component: ProductListComponent },
+          { path: '', component: ProductListComponent, resolve: {products: ProductListResolver} },
           {
             path: ':id',
             component: ProductDetailComponent,
