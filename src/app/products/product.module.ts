@@ -11,6 +11,7 @@ import { ProductEditInfoComponent } from './product-edit/product-edit-info.compo
 import { ProductEditTagsComponent } from './product-edit/product-edit-tags.component';
 import { FormsModule } from '@angular/forms';
 import { ProductListResolver } from './product-list-resolver';
+import { AuthGuard } from '../user/auth.guard';
 
 @NgModule({
   imports: [
@@ -20,6 +21,7 @@ import { ProductListResolver } from './product-list-resolver';
       {
         path: 'products',
         // child routes are relative to parent path
+        canActivate: [AuthGuard],
         children: [
           // these will render on the first (outer) outlet
           { path: '', component: ProductListComponent, resolve: {products: ProductListResolver} },
