@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class MessageService {
+  isDisplayed = false;  // here to be shared on injection across components
   private _messages: string[] = [];
 
   get messages(): string[] {
