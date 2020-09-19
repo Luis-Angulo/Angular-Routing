@@ -30,15 +30,15 @@ export class ProductListComponent implements OnInit {
   constructor(private productService: ProductService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.listFilter = this.route.snapshot.queryParamMap.get('filterBy') || '';
-    this.showImage = this.route.snapshot.queryParamMap.get('showImage') === 'true';
-    this.productService.getProducts().subscribe({
-      next: products => {
-        this.products = products;
-        this.filteredProducts = this.performFilter(this.listFilter);
-      },
-      error: err => this.errorMessage = err
-    });
+    // fetch data from route resolver to enable load animation
+    this.route.data.subscribe(
+      (resolvedData) => {
+      console.log(resolvedData);
+      this.products = resolvedData.products.products;
+      this.showImage = resolvedData.products.showImage;
+      this.listFilter = resolvedData.products.listFilter;},
+      (err) => (this.errorMessage = err.products.error),
+      );
   }
 
   performFilter(filterBy: string): Product[] {
