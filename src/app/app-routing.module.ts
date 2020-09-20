@@ -3,6 +3,7 @@ import { RouterModule } from '@angular/router';
 
 import { WelcomeComponent } from './home/welcome.component';
 import { PageNotFoundComponent } from './page-not-found.component';
+import { SelectivePreloading } from './selectivePreloading.service';
 import { AuthGuard } from './user/auth.guard';
 
 @NgModule({
@@ -13,13 +14,15 @@ import { AuthGuard } from './user/auth.guard';
         { path: 'home', redirectTo: 'welcome' },
         {
           path: 'products',
-          canLoad: [AuthGuard],
+          canActivate: [AuthGuard], // canLoad blocks lazy loading
+          data: { preload: true },
           loadChildren: () =>
             import('./products/product.module').then((m) => m.ProductModule),
         },
         { path: '', redirectTo: 'welcome', pathMatch: 'full' },
         { path: '**', component: PageNotFoundComponent },
-      ] /*{enableTracing: true}*/
+      ],
+      { preloadingStrategy: SelectivePreloading }
     ),
   ],
   exports: [RouterModule],
