@@ -11,7 +11,6 @@ import { ProductEditInfoComponent } from './product-edit/product-edit-info.compo
 import { ProductEditTagsComponent } from './product-edit/product-edit-tags.component';
 import { FormsModule } from '@angular/forms';
 import { ProductListResolver } from './product-list-resolver';
-import { AuthGuard } from '../user/auth.guard';
 import { ProductEditGuard } from './product-edit/product-edit.guard';
 
 @NgModule({
@@ -19,30 +18,27 @@ import { ProductEditGuard } from './product-edit/product-edit.guard';
     SharedModule,
     FormsModule,
     RouterModule.forChild([
+      // these will render on the first (outer) outlet
       {
-        path: 'products',
-        // child routes are relative to parent path
-        canActivate: [AuthGuard],
+        path: '',
+        component: ProductListComponent,
+        resolve: { products: ProductListResolver },
+      },
+      {
+        path: ':id',
+        component: ProductDetailComponent,
+        resolve: { product: ProductResolver },
+      },
+      {
+        path: ':id/edit',
+        component: ProductEditComponent,
+        resolve: { product: ProductResolver },
+        canDeactivate: [ProductEditGuard],
+        // these will render on the second (inner) outlet
         children: [
-          // these will render on the first (outer) outlet
-          { path: '', component: ProductListComponent, resolve: {products: ProductListResolver} },
-          {
-            path: ':id',
-            component: ProductDetailComponent,
-            resolve: { product: ProductResolver },
-          },
-          {
-            path: ':id/edit',
-            component: ProductEditComponent,
-            resolve: { product: ProductResolver },
-            canDeactivate: [ProductEditGuard],
-            // these will render on the second (inner) outlet
-            children: [
-              { path: '', redirectTo: 'info', pathMatch: 'full' },
-              { path: 'info', component: ProductEditInfoComponent },
-              { path: 'tags', component: ProductEditTagsComponent },
-            ],
-          },
+          { path: '', redirectTo: 'info', pathMatch: 'full' },
+          { path: 'info', component: ProductEditInfoComponent },
+          { path: 'tags', component: ProductEditTagsComponent },
         ],
       },
     ]),
